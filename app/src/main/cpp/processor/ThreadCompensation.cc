@@ -240,7 +240,7 @@ void ThreadCompensation::frameCompensate()
         temp = old_r_mat;//old_r_mat是从上一帧到这一帧的变化
 
         auto T = CalTranslationByR(temp);
-        LOGI("trans by decompose:%f, ty:%f， %f, %f", T[0], T[1], aff.at<double>(0, 2), aff.at<double>(1, 2));
+        LOGI("trans by decompose: tx:%f, ty:%f; %f, %f", T[0], T[1], aff.at<double>(0, 2), aff.at<double>(1, 2));
         cv::Mat trans_by_r = (cv::Mat_<double>(3, 3) << 1, 0, -T[0], 0, 1, -T[1], 0, 0, 1);
         new_aff = aff;
         new_aff = new_aff * trans_by_r ;
@@ -279,7 +279,7 @@ void ThreadCompensation::frameCompensate()
     new_aff =  new_aff * r_temp;
 //    new_aff =  r_temp.clone();
 
-    LOGI("new_aff after_Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", new_aff.at<double>(0,0), new_aff.at<double>(0,1), new_aff.at<double>(0,2), new_aff.at<double>(1,0), new_aff.at<double>(1,1), new_aff.at<double>(1,2), new_aff.at<double>(2,0), new_aff.at<double>(2,1), new_aff.at<double>(2,2));
+    //LOGI("new_aff after_Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", new_aff.at<double>(0,0), new_aff.at<double>(0,1), new_aff.at<double>(0,2), new_aff.at<double>(1,0), new_aff.at<double>(1,1), new_aff.at<double>(1,2), new_aff.at<double>(2,0), new_aff.at<double>(2,1), new_aff.at<double>(2,2));
 
     if(is_write_to_file_){
 //        WriteToFile(file, temp);

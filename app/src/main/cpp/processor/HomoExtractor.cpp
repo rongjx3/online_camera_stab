@@ -124,7 +124,7 @@ bool HomoExtractor::judge_recal_simple(cv::Mat img1, std::vector<char> ifselect)
 }
 
 void HomoExtractor::detectFeature(const cv::Mat& img, int pic_index) {
-    LOGI("step2_1");
+    //LOGI("step2_1");
     double quality_level = 0.1;
     double min_distance = 8;
     int max_corners = 8;
@@ -154,7 +154,7 @@ void HomoExtractor::detectFeature(const cv::Mat& img, int pic_index) {
 //    startp.push_back(cv::Point2f(3*half_w, 2*half_h));
 //    startp.push_back(cv::Point2f(3*half_w, 3*half_h));
 
-    LOGI("step2_2");
+    //LOGI("step2_2");
     cv::Rect rect[16];
     cv::Mat lastGray_a[16];
 
@@ -171,7 +171,7 @@ void HomoExtractor::detectFeature(const cv::Mat& img, int pic_index) {
             last_features_[pic_index].push_back(pt);
         }
     }
-    LOGI("step2_3");
+    //LOGI("step2_3");
 
     std::unique_lock<std::mutex> detect_lock(detect_mutex_);
 
@@ -182,7 +182,7 @@ void HomoExtractor::detectFeature(const cv::Mat& img, int pic_index) {
     }
     detect_lock.unlock();
 
-    LOGI("step2_4");
+    //LOGI("step2_4");
 }
 
 std::vector<cv::Point2f> HomoExtractor::detectCertainFeature(const std::vector<int>& block_index) {
@@ -267,7 +267,7 @@ void HomoExtractor::trackCertainFeature( std::vector<cv::Point2f> &last_add_feat
         int a = in_area(pt, lastGray.cols/4, lastGray.rows/4);
         new_point_num[a]++;
     }
-    LOGI("rerererere:new[%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d]",
+    LOGI("new_point_num :new[%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d]",
          new_point_num[0], new_point_num[1],  new_point_num[2], new_point_num[3],
          new_point_num[4],  new_point_num[5],  new_point_num[6], new_point_num[7],
          new_point_num[8],  new_point_num[9],  new_point_num[10], new_point_num[11],
@@ -298,8 +298,8 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
     std::vector<float> err;
 //    curFeatures.clear();
     cur_features_[pic_index].clear();
-    LOGI("step4_1");
-    LOGI("OFP points size: %d",last_features_[pic_index].size());
+    //LOGI("step4_1");
+    //LOGI("OFP points size: %d",last_features_[pic_index].size());
     if(last_features_[pic_index].size() == 0) {
         LOGI("OFP size is zero!");
         track_thread_over_num_--;
@@ -315,7 +315,7 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
 //    status_choose.clear();
 //    status_choose.assign(status.begin(), status.end());//将status复制到status_choose中
 
-    LOGI("step4_2");
+    //LOGI("step4_2");
     int max = last_features_[pic_index].size() < cur_features_[pic_index].size() ? last_features_[pic_index].size() : cur_features_[pic_index].size();
     double dis_sum=0;
     //如果是没有找到匹配点，两点之间的距离为0，不影响平均距离
@@ -335,7 +335,7 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
         }
     }//如果大于特征点之间的距离大于平均距离的1.4倍，则舍弃
 
-    LOGI("step4_3");
+    //LOGI("step4_3");
     //计算平均角度，先确定合理的起始向量，再计算间的平均角度
     cv::Point2f start_vec;
     double deg_avg=0;
@@ -359,13 +359,13 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
         {
             deg_avg=sum_deg/sum_count;
         }
-        LOGI("deg_avg: %f, sum & max: %f/%f", deg_avg,sum_deg,max);
+        //LOGI("deg_avg: %f, sum & max: %f/%f", deg_avg,sum_deg,max);
         if( deg_avg < PI/2 && deg_avg > -PI/2 && sum_count == 0 )
         {
             break;
         }
     }
-    LOGI("deg_avg find end: %f", deg_avg);
+    //LOGI("deg_avg find end: %f", deg_avg);
     double range = PI/4;
     if( deg_avg < PI/2 && deg_avg > -PI/2 ) {
         for (int i = 0; i < max; i++) {
@@ -376,7 +376,7 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
         }
     }
 
-    LOGI("step4_4");
+    //LOGI("step4_4");
     cv::Mat m_Fundamental;
     std::vector<uchar> m_RANSACStatus;
     cv::Mat p1(last_features_[pic_index]);
@@ -384,7 +384,7 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
     double outliner=0;
     m_Fundamental = findFundamentalMat(p1, p2, m_RANSACStatus, cv::FM_RANSAC, 3, 0.99);
 
-    LOGI("step4_5");
+    //LOGI("step4_5");
     for (int j = 0 ; j < status.size() ; j++ )
     {
         if (m_RANSACStatus.size() > j && m_RANSACStatus[j] == 0) // 状态为0表示野点(误匹配)
@@ -405,7 +405,7 @@ void HomoExtractor::trackFeature(const cv::Mat &img1, const cv::Mat &img2, const
 //    lastFeaturesTmp.clear();
 
     cv::Point2f convert((pic_index % 2) * last_rect.cols, (pic_index / 2) * last_rect.rows);
-    LOGI("step4_6");
+    //LOGI("step4_6");
     std::unique_lock<std::mutex> track_lock(track_mutex_);
     for (auto itC = cur_features_[pic_index].begin(), itP = last_features_[pic_index].begin(); itC != cur_features_[pic_index].end(); itC ++, itP ++, idx ++) {
 
@@ -529,7 +529,7 @@ double HomoExtractor::vec_cos(cv::Point2f s, cv::Point2f e1, cv::Point2f e2) {
 }
 
 double HomoExtractor::calcul_H_error(int c_h, int c_w) {
-    LOGI("step7_1");
+    //LOGI("step7_1");
     int height=100;
     int width=100;
     double error_rate=1.1;
@@ -537,18 +537,18 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
 
     cv::Mat  vertex=(cv::Mat_<double>(3, 4)<<c_w-width, c_w-width, c_w+width, c_w+width, c_h-height, c_h+height, c_h+height, c_h-height, 1.0, 1.0, 1.0, 1.0);
 
-    LOGI("step7_2");
+    //LOGI("step7_2");
     cv::Point2f cp1, cp2, cp3, cp4;
     std::vector<cv::Point2f> l, c;
 
-    LOGI("step7_3");
+    //LOGI("step7_3");
     //LOGI("H size in calcul_H_error:(%d, %d)",H.rows, H.cols);
     /*LOGI("H in calcul_H_error:[%f, %f, %f; %f, %f, %f; %f, %f, %f]",
          H.at<double>(0,0), H.at<double>(0,1), H.at<double>(0,2),
          H.at<double>(1,0), H.at<double>(1,1), H.at<double>(1,2),
          H.at<double>(2,0), H.at<double>(2,1), H.at<double>(2,2));*/
     cv::Mat newvertex = H * vertex;
-    LOGI("step7_4");
+    //LOGI("step7_4");
     cp1.x = newvertex.at<double>(0, 0) / newvertex.at<double>(2, 0);
     cp1.y = newvertex.at<double>(1, 0) / newvertex.at<double>(2, 0);
 
@@ -560,7 +560,7 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
 
     cp4.x = newvertex.at<double>(0, 3) / newvertex.at<double>(2, 3);
     cp4.y = newvertex.at<double>(1, 3) / newvertex.at<double>(2, 3);
-    LOGI("step7_5");
+    //LOGI("step7_5");
 
     double c_x=(cp1.x + cp2.x + cp3.x + cp4.x)/4;
     double c_y=(cp1.y + cp2.y + cp3.y + cp4.y)/4;
@@ -569,7 +569,7 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
     cv::Point2f lp1(c_x-width, c_y-height),lp2(c_x-width, c_y+height),lp3(c_x+width, c_y+height),lp4(c_x+width, c_y-height);
     double mindis=9999;
     double mind=0;
-    LOGI("step7_6");
+    //LOGI("step7_6");
 
     for(double d=-10; d<=10; d++)
     {
@@ -589,7 +589,7 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
             mind=d;
         }
     }
-    LOGI("step7_7");
+    //LOGI("step7_7");
 
     double mindis2=9999;
     double mins=0;
@@ -615,7 +615,7 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
             mins=s;
         }
     }
-    LOGI("step7_8");
+    //LOGI("step7_8");
 
     if(true)
     {
@@ -636,7 +636,7 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
             stable_move2=true;
         }
     }
-    LOGI("step7_9");
+    //LOGI("step7_9");
 
     if(true)
     {
@@ -668,7 +668,7 @@ double HomoExtractor::calcul_H_error(int c_h, int c_w) {
 
         second_H = findHomography(lpt, cpt, 0);
     }
-    LOGI("step7_10");
+    //LOGI("step7_10");
 
     return mindis;
 
@@ -876,7 +876,7 @@ void HomoExtractor::stab_feature_25_H(cv::Mat img1, cv::Mat img2) {
 }
 
 cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
-    LOGI("step0_1");
+    //LOGI("step0_1");
     std::unique_lock<std::mutex> main_lock(mutex_);
 //    cv::Mat img2_r;
     curGray = img2.rowRange(0,img2.rows * 2 / 3);
@@ -887,7 +887,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
     cv::Rect rect_ru(curGray.cols/2, 0, curGray.cols/2, curGray.rows/2);
     cv::Rect rect_ld(0, curGray.rows/2, curGray.cols/2, curGray.rows/2);
     cv::Rect rect_rd(curGray.cols/2, curGray.rows/2, curGray.cols/2, curGray.rows/2);
-    LOGI("step0_2");
+    //LOGI("step0_2");
     if(ex_index_ == 0){
 //        cv::Mat img1_r;
         lastGray = img1.rowRange(0,img1.rows * 2 / 3);
@@ -908,7 +908,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
 //        detect_thread3_.join();
     }
     is_wait_over.wait(main_lock);
-    LOGI("step0_3");
+    //LOGI("step0_3");
 
     cur_lu_ = curGray(rect_lu);
     cur_ru_ = curGray(rect_ru);
@@ -922,7 +922,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
     {
         point_num[j] = 0;
     }
-    LOGI("step0_4");
+    //LOGI("step0_4");
     track_thread0_ = thread(&HomoExtractor::trackFeature, this, img1.rowRange(0,img2.rows * 2 / 3),
             img2.rowRange(0,img2.rows * 2 / 3),last_lu_, cur_lu_, 0);
     track_thread1_ = thread(&HomoExtractor::trackFeature, this, img1.rowRange(0,img2.rows * 2 / 3),
@@ -936,7 +936,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
 //    track_thread2_.join();
 //    track_thread3_.join();
     is_wait_over.wait(main_lock);
-    LOGI("step0_5");
+    //LOGI("step0_5");
 
     bool re = judge_area();
     if(re){
@@ -951,7 +951,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
          point_num[8], point_num[9], point_num[10], point_num[11],
          point_num[12], point_num[13], point_num[14], point_num[15], re);
 
-    LOGI("step0_6");
+    //LOGI("step0_6");
     std::vector<char> ifselect;
     calcul_Homo(ifselect,2000,0);
 
@@ -964,7 +964,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
     int tmp_count[16]={0};
     double ifinliner = 0;
 
-    LOGI("step0_7");
+    //LOGI("step0_7");
     for(int i=0; i<ifselect.size(); i++)
     {
         if(ifselect[i] == 1)
@@ -973,17 +973,17 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
         }
     }
 
-    LOGI("step0_7_1");
+    //LOGI("step0_7_1");
     double ifinrate1=ifinliner/statussize;
     double ifinrate2=ifinliner/ifselect.size();
     bool re2 = false;
-    LOGI("step0_7_2");
+    //LOGI("step0_7_2");
     re2= judge_recal_simple(img1, ifselect);
-    LOGI("step0_7_3");
+    //LOGI("step0_7_3");
     H_ori = H.clone();
     double h_err = calcul_H_error(height/2, width/2);
-    LOGI("step0_7_4");
-    LOGI("H Matinthread h_err:%f", h_err);
+    //LOGI("step0_7_4");
+    //LOGI("H Matinthread h_err:%f", h_err);
 
     //LOGI("step0_75");
     cv::Mat perp, sca, shear, rot, trans;
@@ -1019,7 +1019,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
 //        LOGI("redo detect and track");
 //
 //    }
-    LOGI("step0_8");
+    //LOGI("step0_8");
     if(draw_information){
         int tsize=curFeaturesTmp.size()>lastFeaturesTmp.size() ? lastFeaturesTmp.size() : curFeaturesTmp.size();
         for(int i = 0; i < tsize; i++){
@@ -1033,9 +1033,9 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
         num  = num + std::to_string(curFeaturesTmp.size());
     }
 
-    LOGI("step0_9");
+    //LOGI("step0_9");
     threads::ThreadContext::feature_by_r_.push(curFeaturesTmp);
-    LOGI("curFeaturesTmpsiez:%d", curFeaturesTmp.size());
+    LOGI("curFeaturesTmp size:%d", curFeaturesTmp.size());
 //    lastFeatures.clear();
 //    lastFeatures.assign(curFeatures.begin(), curFeatures.end());
     curGray.copyTo(lastGray);
@@ -1053,7 +1053,7 @@ cv::Mat HomoExtractor::extractHomo(cv::Mat &img1, cv::Mat &img2) {
     track_thread2_.join();
     track_thread3_.join();
 
-    LOGI("step0_10");
+    //LOGI("step0_10");
     return H;
 
 
