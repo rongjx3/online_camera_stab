@@ -24,7 +24,7 @@ void StableProcessor::Init(Size videoSize) {
     out_index_ = 0;
     cm_thread_ -> videoSize = videoSize;
     cm_thread_ -> cropControlFlag = true;//在此设置是否进行裁剪控制
-    cm_thread_ -> shakeDetect = false;//在此设置是否进行抖动检测
+    cm_thread_ -> shakeDetect = true;//在此设置是否进行抖动检测
     cm_thread_ -> cropRation = 0.7;
 
     //klt_thread_->start();
@@ -33,7 +33,7 @@ void StableProcessor::Init(Size videoSize) {
 
 }
 
-void StableProcessor::enqueueInputBuffer(int buffer_index, const Mat* new_frame, const Mat* RR, const Mat* rs_out_mat) {
+void StableProcessor::enqueueInputBuffer(int buffer_index, const Mat* new_frame, const Mat* rs_out_mat) {
 
 
     assert (buffer_index == buffer_index_);
@@ -50,7 +50,6 @@ void StableProcessor::enqueueInputBuffer(int buffer_index, const Mat* new_frame,
 //        ThreadContext::out_semaphore->Signal();
         ThreadContext::mc_semaphore->Signal();
     }
-
 
     buffer_index_ = (buffer_index_ + 1) % ThreadContext::BUFFERSIZE;
 
@@ -118,4 +117,8 @@ void StableProcessor::setDrawStatus(bool is_draw) {
 
 void StableProcessor::setWriteStatus(bool is_write) {
     cm_thread_ -> is_write_to_file_ = is_write;
+}
+
+void StableProcessor::setType(int type) {
+    cm_thread_ -> homo_type = type;
 }

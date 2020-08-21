@@ -32,8 +32,8 @@ public class StableProcessor {
         return n_dequeueInputBuffer();
     }
 
-    public void enqueueInputBuffer(int bufIdx, Mat newFrame, Mat RR, Mat rs_out_mat) {
-        n_enqueueInputBuffer(bufIdx, newFrame.nativeObj, RR.nativeObj, rs_out_mat.nativeObj);
+    public void enqueueInputBuffer(int bufIdx, Mat newFrame, Mat rs_out_mat) {
+        n_enqueueInputBuffer(bufIdx, newFrame.nativeObj, rs_out_mat.nativeObj);
     }
 
     public void enqueueOutputBuffer() {
@@ -56,13 +56,18 @@ public class StableProcessor {
         n_setWriteStatus(isWrite);
     }
 
+    public void setType(int type){
+        n_setType(type);
+    }
+
     private native long n_StableProcessor();
     private native void n_Init(int width, int height);
     private native int n_dequeueInputBuffer();
-    private native void n_enqueueInputBuffer(int buffer_index, long new_frame, long RR, long rs_out_mat);
+    private native void n_enqueueInputBuffer(int buffer_index, long new_frame, long rs_out_mat);
     private native void n_enqueueOutputBuffer();
     private native void n_dequeueOutputBuffer(long stableVec, long frame, long rsMat);
     private native void n_setCrop(boolean isCrop);
     private native void n_setDrawStatus(boolean isDraw);
     private native void n_setWriteStatus(boolean isWrite);
+    private native void n_setType(int type);
 }

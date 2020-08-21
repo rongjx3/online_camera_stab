@@ -43,7 +43,7 @@ private:
 
 
     cv::Mat result ;
-    cv::Mat RR;
+    //cv::Mat RR;
 
     double px;
     double py;
@@ -68,7 +68,7 @@ public:
     std::vector<cv::Vec<double, 3>> getTheta();
     cv::Vec<double, 3> getNewTheta(cv::Vec<double, 3> oldtheta);
     cv::Mat getRotationMat(cv::Vec<double, 3> theta);
-    void getR(double timestamp, Mat *matR, bool isCrop);
+    void getR(double timestamp, bool isCrop);
     void putValue(double timestamp, float x, float y, float z);
 
 private:

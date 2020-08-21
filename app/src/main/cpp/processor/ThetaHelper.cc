@@ -315,7 +315,7 @@ void ThetaHelper::cropControl(Mat& transVec) {
 
 }
 
-void ThetaHelper::getR(double timestamp, Mat *matR, bool isCrop) {
+void ThetaHelper::getR(double timestamp, bool isCrop) {
 
     Timeframe.push_back(timestamp);
     std::vector<cv::Vec<double, 3>> old_theta_vec = getTheta();
@@ -337,8 +337,6 @@ void ThetaHelper::getR(double timestamp, Mat *matR, bool isCrop) {
 
     Quaternion q = Quaternion::EulerToQuaternion(oldtheta[0], oldtheta[1], oldtheta[2]);
     cv::Mat oldRotation = Quaternion::QuaternionToR(q);
-    RR = cv::Mat::eye(3, 3, CV_64F);
-    RR.copyTo(*matR);   //无意义？
 
     cur_mat = oldRotation;
     threads::ThreadContext::r_convert_que.push(oldRotation);

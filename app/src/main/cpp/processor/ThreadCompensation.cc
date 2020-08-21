@@ -49,7 +49,6 @@ void ThreadCompensation::start() {
 //    homoExtractor.setDrawStatus(drawFlag);
     filter = Filter(30, 40, Filter::delta_T);
     filter1 = AutoFilter(20, 40);
-    last_homography_ = cv::Mat::eye(3, 3, CV_64F);
     worker_thread_ = thread(&ThreadCompensation::worker, this);
 }
 
@@ -93,7 +92,7 @@ double line_distance(cv::Point2f p0, cv::Point2f p1, cv::Point2f p2)
 //检测是否抖动
 bool ThreadCompensation::stable_count(double e)
 {
-    double height = curGray.rows * ThreadContext::DOWNSAMPLE_SCALE;
+    /*double height = curGray.rows * ThreadContext::DOWNSAMPLE_SCALE;
     double width = curGray.cols * ThreadContext::DOWNSAMPLE_SCALE;
     cv::Point2f cen(width/2, height/2);
     double long_side = width > height ? width : height;
@@ -135,13 +134,12 @@ bool ThreadCompensation::stable_count(double e)
         {
             numStable++;
         }
-    }
+    }*/
 
-    LOGE("stable and scale: %d / %d", numStable , numScale);
+    //LOGE("stable and scale: %d / %d", numStable , numScale);
     if(e < 1e-7)
     {
         LOGE("is stable");
-        H_scale = cv::Mat::eye(3, 3, CV_64F);
         return true;
     }
     else
@@ -160,9 +158,20 @@ Mat ThreadCompensation::computeAffine()
     frameSize.height=frame.rows * 2 / 3;
     frameSize.width=frame.cols;
 
+    center.x=frameSize.width/2;
+    center.y=frameSize.height/2;
+
     if(is_first_use_rtheta){
         ThreadContext::rTheta.pop();
         is_first_use_rtheta = false;
+    }
+    if(is_first_frame)
+    {
+        lastf=frame.clone();
+        is_first_frame = false;
+    } else{
+        lastFrame=lastf.clone();
+        lastf=frame.clone();
     }
     Vec<double, 3> rot = ThreadContext::rTheta.front();//前一帧的旋转矩阵
     ThreadContext::rTheta.pop();
@@ -180,8 +189,9 @@ Mat ThreadCompensation::computeAffine()
     is_stable_ = sc;
     LOGI("see error : %f, %d ", error, is_stable_);
     Mat aff = cv::Mat::eye(3,3,CV_64F);
-    if(sc)
+    if(sc && shakeDetect)
     {
+        LOGI("is stable!");
         aff = RR2stableVec * stableVec2RR;
     }
     else
@@ -220,11 +230,20 @@ void ThreadCompensation::frameCompensate()
     //LOGI("cal aff");
     Mat aff = computeAffine();
     //Mat aff=cv::Mat::eye(3, 3, CV_64F);
+    cv::Mat M1 = (cv::Mat_<double>(3, 3) << 1, 0, - center.x, 0, 1, - center.y, 0, 0, 1);
+    cv::Mat M2 = (cv::Mat_<double>(3, 3) << 1, 0, center.x, 0, 1, center.y, 0, 0, 1);
 
-    cv::Point2f center(lastGray.cols/2, lastGray.rows/2);
+    LOGI("centerxy: x:%f, y:%f", center.x, center.y);
+    cv::Mat temp = cv::Mat::eye(3, 3, CV_64F);
+    double e_i;
+    cv::Mat a_perp, a_sca, a_shear, a_rot, a_trans;
+    cv::Mat r_perp, r_sca, r_shear, r_rot, r_trans;
+    decomposeHomo(aff, center, a_perp, a_sca, a_shear, a_rot, a_trans);
 
-    cv::Mat perp, sca, shear, rot, trans;
-    decomposeHomo(aff, center, perp, sca, shear, rot, trans);
+    //temp = perp.clone();
+    //e_i=Mat_error_I(temp);
+    //LOGI("aff_perp Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
+    //aff = perp * sca * shear * rot;
 
     cv::Mat old_r_mat = threads::ThreadContext::r_convert_que.front();
     cv::Mat old_r_mat1 = threads::ThreadContext::r_convert_que1.front();
@@ -232,16 +251,17 @@ void ThreadCompensation::frameCompensate()
     threads::ThreadContext::r_convert_que.pop();
 
     auto new_aff = aff;
-    LOGI("new_aff before_Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", new_aff.at<double>(0,0), new_aff.at<double>(0,1), new_aff.at<double>(0,2), new_aff.at<double>(1,0), new_aff.at<double>(1,1), new_aff.at<double>(1,2), new_aff.at<double>(2,0), new_aff.at<double>(2,1), new_aff.at<double>(2,2));
+    e_i=Mat_error_I(aff);
 
     cv::Mat r_temp;
-    cv::Mat temp = cv::Mat::eye(3, 3, CV_64F);
+
     if(!is_stable_ ){
         temp = old_r_mat;//old_r_mat是从上一帧到这一帧的变化
 
-        auto T = CalTranslationByR(temp);
-        LOGI("trans by decompose: tx:%f, ty:%f; %f, %f", T[0], T[1], aff.at<double>(0, 2), aff.at<double>(1, 2));
-        cv::Mat trans_by_r = (cv::Mat_<double>(3, 3) << 1, 0, -T[0], 0, 1, -T[1], 0, 0, 1);
+        decomposeHomo(inmat * temp * inmat.inv(), center, r_perp, r_sca, r_shear, r_rot, r_trans);
+        //auto T = CalTranslationByR(temp);
+        //LOGI("trans by decompose: tx:%f, ty:%f; %f, %f", T[0], T[1], trans.at<double>(0, 2), trans.at<double>(1, 2));
+        cv::Mat trans_by_r = (cv::Mat_<double>(3, 3) << 1, 0, -r_trans.at<double>(0, 2), 0, 1, -r_trans.at<double>(1, 2), 0, 0, 1);
         new_aff = aff;
         new_aff = new_aff * trans_by_r ;
 
@@ -252,32 +272,46 @@ void ThreadCompensation::frameCompensate()
     threads::ThreadContext::last_old_Rotation_ = old_r_mat1;
 
     //测试旋转矩阵
-    /*double e_i;
-    decomposeHomo(r_temp, center, perp, sca, shear, rot, trans);
-    temp = perp.clone();
+
+    decomposeHomo(r_temp, center, r_perp, r_sca, r_shear, r_rot, r_trans);
+    /*temp = r_perp.clone();
     e_i=Mat_error_I(temp);
-    LOGI("rt_perp Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
-    temp = sca.clone();
+    //LOGI("rt_perp Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
+    temp = r_sca.clone();
     e_i=Mat_error_I(temp);
-    LOGI("rt_sca Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
-    temp = shear.clone();
+    //LOGI("rt_sca Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
+    temp = r_shear.clone();
     e_i=Mat_error_I(temp);
-    LOGI("rt_shear Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
-    temp = rot.clone();
+    //LOGI("rt_shear Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
+    temp = r_rot.clone();
     e_i=Mat_error_I(temp);
-    LOGI("rt_rot Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
-    temp = sca.clone();
+    //LOGI("rt_rot Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
+    temp = r_trans.clone();
     e_i=Mat_error_I(temp);
-    LOGI("rt_trans Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
-*/
+    //LOGI("rt_trans Matinthreads: %f; %f, %f, %f, %f, %f, %f, %f, %f, %f", e_i, temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
+    */
     //
 
     LOGI("new_aff Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", new_aff.at<double>(0,0), new_aff.at<double>(0,1), new_aff.at<double>(0,2), new_aff.at<double>(1,0), new_aff.at<double>(1,1), new_aff.at<double>(1,2), new_aff.at<double>(2,0), new_aff.at<double>(2,1), new_aff.at<double>(2,2));
     //LOGI("r_temp Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
 //    LOGI("r_temp1 Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", temp1.at<double>(0,0), temp1.at<double>(0,1), temp1.at<double>(0,2), temp1.at<double>(1,0), temp1.at<double>(1,1), temp1.at<double>(1,2), temp1.at<double>(2,0), temp1.at<double>(2,1), temp1.at<double>(2,2));
 
-    new_aff =  new_aff * r_temp;
-//    new_aff =  r_temp.clone();
+
+    if(homo_type == 1)
+    {
+        new_aff =  new_aff * r_temp;
+        //new_aff =  r_trans * r_rot * r_shear * r_sca * r_perp;
+        //new_aff =  a_trans * r_rot * a_shear * a_sca * r_perp;
+    }
+    else
+    {
+        //new_aff = r_temp;
+        //new_aff =  new_aff * r_trans * r_shear * r_sca * r_perp;
+        new_aff =  a_trans * a_rot * a_shear * a_sca * a_perp;
+        //new_aff = cv::Mat::eye(3, 3, CV_64F);
+    }
+
+    LOGI("new_aff Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", new_aff.at<double>(0,0), new_aff.at<double>(0,1), new_aff.at<double>(0,2), new_aff.at<double>(1,0), new_aff.at<double>(1,1), new_aff.at<double>(1,2), new_aff.at<double>(2,0), new_aff.at<double>(2,1), new_aff.at<double>(2,2));
 
     //LOGI("new_aff after_Matinthreads: %f, %f, %f, %f, %f, %f, %f, %f, %f", new_aff.at<double>(0,0), new_aff.at<double>(0,1), new_aff.at<double>(0,2), new_aff.at<double>(1,0), new_aff.at<double>(1,1), new_aff.at<double>(1,2), new_aff.at<double>(2,0), new_aff.at<double>(2,1), new_aff.at<double>(2,2));
 

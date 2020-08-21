@@ -31,12 +31,13 @@ namespace threads {
 
         void Init(Size videoSize);
         int dequeueInputBuffer();
-        void enqueueInputBuffer(int buffer_index, const Mat* new_frame, const Mat* RR, const Mat* rs_out_mat);
+        void enqueueInputBuffer(int buffer_index, const Mat* new_frame, const Mat* rs_out_mat);
         void enqueueOutputBuffer();
         void dequeueOutputBuffer(Mat* const stableVec, Mat* const frame, Mat* const rsMat);
         void setCrop(bool isCrop);
         void setDrawStatus(bool is_draw);
         void setWriteStatus(bool is_write);
+        void setType(int type);
     };
 }
 

@@ -39,8 +39,9 @@ public class MainCameraActivity extends AppCompatActivity implements OnRecordLis
     private Button cropButton;
     private SeekBar seekBar;
     private PermissionsUtil permissionsUtil;
-    private Button infoButton;
+    private Button infoButton, typeButton;
     private boolean isDraw = true;
+    private int typ = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,6 +52,20 @@ public class MainCameraActivity extends AppCompatActivity implements OnRecordLis
         mRenderView.setOnRecordListener(this);
         textView = findViewById(R.id.tv_timedelay);
         textView.setText(String.valueOf((int)(12000000/1000/1000)));
+        typeButton = findViewById(R.id.bt_type);
+        typeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (typ == 1) {
+                    typ=2;
+                    ((Button) v).setText("type:2");
+                } else {
+                    typ=1;
+                    ((Button) v).setText("type:1");
+                }
+                mRenderView.glRender.camera2Helper.stableProcessor.setType(typ);
+            }
+        });
         cropButton = findViewById(R.id.bt_crop);
         cropButton.setOnClickListener(new View.OnClickListener() {
             @Override

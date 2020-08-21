@@ -3,9 +3,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.Sensor;
@@ -24,12 +22,9 @@ import android.media.ImageReader;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.util.Log;
 import android.util.Range;
 import android.util.Size;
-import android.view.Surface;
-import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -39,19 +34,12 @@ import androidx.annotation.NonNull;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import me.zhehua.gryostable.ImageUtil;
-import me.zhehua.gryostable.MainCameraActivity;
-import me.zhehua.gryostable.R;
 import me.zhehua.gryostable.StableProcessor;
 import me.zhehua.gryostable.ThetaHelper;
 import me.zhehua.gryostable.widget.GlRenderView;
@@ -65,7 +53,9 @@ public class Camera2Helper {
     private SensorManager mSensorManager;
     private Sensor mGyroSensor;
     private ThetaHelper mThetaHelper;
-    public  long timeDelay = 12000000;
+    //public  long timeDelay = 18000000;
+    public  long timeDelay = 17000000; //Mi8
+    //public  long timeDelay = 12000000; //HWp40pro
     public StableProcessor stableProcessor;
     public boolean isCrop = true;
     private TextView textView;
@@ -602,10 +592,10 @@ public class Camera2Helper {
 
             } else {
                 int idx = stableProcessor.dequeueInputBuffer();
-                mThetaHelper.n_getR(lastTimestamp, R.nativeObj, isCrop);
+                mThetaHelper.n_getR(timeStamp, isCrop);
                 Mat rs_out_mat = new Mat(0, 0, CvType.CV_64F);
                 mThetaHelper.n_RsChangeVectorToMat(rs_out_mat.nativeObj);
-                stableProcessor.enqueueInputBuffer(idx, lastFrame, R, rs_out_mat);
+                stableProcessor.enqueueInputBuffer(idx, lastFrame, rs_out_mat);
                 Log.d(TAG, "onImageAvailable: "+lastFrame.get(0, 0)[0]);
 //                if (onPreviewListener != null) {
 //                    onPreviewListener.onPreviewFrame(lastFrame, lastFrame.length);

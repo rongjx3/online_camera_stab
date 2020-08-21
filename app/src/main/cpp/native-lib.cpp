@@ -43,12 +43,9 @@ JNIEXPORT void JNICALL
 Java_me_zhehua_gryostable_StableProcessor_n_1enqueueInputBuffer(JNIEnv *env, jobject instance,
                                                                 jint buffer_index,
                                                                 jlong new_frame,
-                                                                jlong RR,
                                                                 jlong rs_out_mat) {
     Mat *inFrame = (Mat *) new_frame;
-    Mat *R = (Mat *) RR;
-    *R = RR2stableVec * (*R) * stableVec2RR;
-    n_sp.enqueueInputBuffer(buffer_index, inFrame, R, (Mat *) rs_out_mat);
+    n_sp.enqueueInputBuffer(buffer_index, inFrame, (Mat *) rs_out_mat);
 }
 
 JNIEXPORT void JNICALL
@@ -84,14 +81,19 @@ Java_me_zhehua_gryostable_StableProcessor_n_1setWriteStatus(JNIEnv *env, jobject
     n_sp.setWriteStatus(isWrite);
 }
 
+JNIEXPORT void JNICALL
+Java_me_zhehua_gryostable_StableProcessor_n_1setType(JNIEnv *env, jobject instance,
+                                                            jint type){
+    n_sp.setType(type);
+}
+
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_me_zhehua_gryostable_ThetaHelper_n_1getR(JNIEnv *env, jobject instance, jlong timestamp,
-                                              jlong matR, jboolean isCrop) {
+Java_me_zhehua_gryostable_ThetaHelper_n_1getR(JNIEnv *env, jobject instance, jlong timestamp, jboolean isCrop) {
 
-    n_th.getR(timestamp / 1000000000.0, (Mat*) matR, isCrop);
+    n_th.getR(timestamp / 1000000000.0, isCrop);
 }
 
 extern "C"

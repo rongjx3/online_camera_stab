@@ -1,1 +1,12 @@
-ninja: no work to do.
+[1/2] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/AutoFilter.cpp.o
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.cpp:5:
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "BSpline.h"
+         ^~~~~~~~~~~
+         "Bspline.h"
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.cpp:6:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "BSpline.h"
+         ^~~~~~~~~~~
+         "Bspline.h"
+2 warnings generated.
+[2/2] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so

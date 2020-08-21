@@ -16,19 +16,15 @@ using namespace threads;
 #define PI 3.1415926535
 class HomoExtractor {
 private:
-    std::vector<cv::Point2f> lastFeatures,curFeatures;
+
     std::vector<cv::Point2f> curFeaturesTmp, lastFeaturesTmp;
     cv::Mat lastGray,curGray;
-//    std::vector<uchar> status,status_choose;
     int ex_index_ = 0;
     int point_num[16];
     int statussize;
-    cv::Mat H, H_ori, second_H;
+    cv::Mat H, second_H;
     cv::Mat last_perp=cv::Mat::eye(3, 3, CV_64F), last_shear=cv::Mat::eye(3, 3, CV_64F);
-    double sumup_err, sumup_H_err1, sumup_H_err2;
-    int addp_frame = 0;
     bool stable_move=true, stable_move2=false;
-    std::vector<cv::Mat> hom_s,homo_n,homo_a1,homo_a2;
     std::vector<int> block_index_;
 
     std::mutex mutex_, detect_mutex_, track_mutex_;
@@ -56,8 +52,6 @@ private:
     cv::Point2f goround(cv::Point2f p1, cv::Point2f p0, double degree);
     cv::Point2f goscale(cv::Point2f p1,cv::Point2f p0, double scale);
     double vec_cos(cv::Point2f s, cv::Point2f e1, cv::Point2f e2);
-    void stab_feature_25(cv::Mat img1, cv::Mat img2);
-    void stab_feature_25_H(cv::Mat img1, cv::Mat img2);
     void decomposeHomo(cv::Mat h, Point2f cen, cv::Mat &perp, cv::Mat &sca, cv::Mat &shear, cv::Mat &rot, cv::Mat &trans);
     double cal_degree(cv::Point2f vec1, cv::Point2f vec2);
 

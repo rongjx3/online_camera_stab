@@ -4,7 +4,7 @@
 
 #include "AutoFilter.h"
 #include "BSpline.h"
-#define LOG_TAG    "c_ThreadCompensation"
+#define LOG_TAG    "c_AutoFilter"
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
@@ -78,7 +78,7 @@ bool AutoFilter::push(cv::Mat goodar) {
 
 }
 
-cv::Mat AutoFilter::pop() {
+cv::Mat AutoFilter:: pop() {
     if(!output_buffer_.empty()){
         cv::Mat ret_mat = output_buffer_.front().clone();
         output_buffer_.pop();
@@ -107,7 +107,14 @@ bool AutoFilter::putIntoWindow(int target, int offset) {
     }
     ret_mat /= sum_weight;
     ex_count++;
-    processCrop(ret_mat, size_);
+    if(true)
+    {
+        processCrop(ret_mat, size_);
+    } else
+    {
+        output_buffer_.push(ret_mat);
+    }
+
     if(ex_count < predict_num_){
         return false;
     }
@@ -347,8 +354,40 @@ void AutoFilter::processCrop(const cv::Mat &comp, const cv::Size &size) {
                 newvertex.at<double>(0, 3) = newvertex.at<double>(0, 3) / newvertex.at<double>(2, 3);
                 newvertex.at<double>(1, 3) = newvertex.at<double>(1, 3) / newvertex.at<double>(2, 3);
                 if(!isInside(cropvertex_, newvertex)){
+                    //LOGI("set it to I");
                     news = I;
+                    cv::Mat result_vec;
+                    bool all_inside = false;
+                    double r = 1.0;
+                    while ((!all_inside) && (r > 0.001)){
+                        double transdet= cv::determinant(stable_vec);//求行列式
+                        cv::Mat transtemp = stable_vec/pow(transdet, 1.0/3);
+                        r = r - 0.01;
+                        result_vec = I * (1-r) + transtemp * r;
+                        //cv::Mat test_res = (comp2 * result_vec.inv()).inv();
+                        newvertex = result_vec * vertex_;
+                        newvertex.at<double>(0,0)=newvertex.at<double>(0,0)/newvertex.at<double>(2,0);
+                        newvertex.at<double>(1,0)=newvertex.at<double>(1,0)/newvertex.at<double>(2,0);
+
+                        newvertex.at<double>(0,1)=newvertex.at<double>(0,1)/newvertex.at<double>(2,1);
+                        newvertex.at<double>(1,1)=newvertex.at<double>(1,1)/newvertex.at<double>(2,1);
+
+                        newvertex.at<double>(0,2)=newvertex.at<double>(0,2)/newvertex.at<double>(2,2);
+                        newvertex.at<double>(1,2)=newvertex.at<double>(1,2)/newvertex.at<double>(2,2);
+
+                        newvertex.at<double>(0,3)=newvertex.at<double>(0,3)/newvertex.at<double>(2,3);
+                        newvertex.at<double>(1,3)=newvertex.at<double>(1,3)/newvertex.at<double>(2,3);
+
+                        all_inside = isInside(cropvertex_,newvertex);
+                    }
+                    LOGI("set it to I:  %f", r);
+                    //news = (comp2 * result_vec.inv()).inv();
+                    news = result_vec;
+                    if(r < 0.04){
+                        news = I;
+                    }
                 }
+
 
                 output_buffer_.push(news.clone());
             }

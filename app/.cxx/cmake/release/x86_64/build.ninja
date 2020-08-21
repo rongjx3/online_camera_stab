@@ -34,7 +34,7 @@ include rules.ninja
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/.cxx/cmake/release/x86_64 && /Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /Users/user/Desktop/onlineStab_update/stable-camera_new/app/.cxx/cmake/release/x86_64 && /Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 build edit_cache: phony CMakeFiles/edit_cache.util
@@ -43,7 +43,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/.cxx/cmake/release/x86_64 && /Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake -H/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app -B/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/.cxx/cmake/release/x86_64
+  COMMAND = cd /Users/user/Desktop/onlineStab_update/stable-camera_new/app/.cxx/cmake/release/x86_64 && /Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake -H/Users/user/Desktop/onlineStab_update/stable-camera_new/app -B/Users/user/Desktop/onlineStab_update/stable-camera_new/app/.cxx/cmake/release/x86_64
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -56,7 +56,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o: CXX_COMPILER__nat
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/native-lib.cpp
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/native-lib.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/Filter.cc.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/Filter.cc
@@ -64,7 +64,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/Filter.cc.o: CXX_COMPILER
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/Filter.cc.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/Filter.cc
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/Filter.cc
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/MySemaphore.cc.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/MySemaphore.cc
@@ -72,7 +72,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/MySemaphore.cc.o: CXX_COM
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/MySemaphore.cc.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/MySemaphore.cc
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/MySemaphore.cc
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/StableProcessor.cc.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/StableProcessor.cc
@@ -80,7 +80,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/StableProcessor.cc.o: CXX
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/StableProcessor.cc.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/StableProcessor.cc
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/StableProcessor.cc
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThetaHelper.cc.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/ThetaHelper.cc
@@ -88,7 +88,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThetaHelper.cc.o: CXX_COM
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/ThetaHelper.cc.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThetaHelper.cc
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThetaHelper.cc
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadCompensation.cc.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/ThreadCompensation.cc
@@ -96,7 +96,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadCompensation.cc.o: 
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadCompensation.cc.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadCompensation.cc
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadCompensation.cc
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadContext.cc.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/ThreadContext.cc
@@ -104,7 +104,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadContext.cc.o: CXX_C
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadContext.cc.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadContext.cc
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadContext.cc
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadRollingShutter.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/ThreadRollingShutter.cpp
@@ -112,7 +112,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadRollingShutter.cpp.
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadRollingShutter.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadRollingShutter.cpp
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadRollingShutter.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/HomoExtractor.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/HomoExtractor.cpp
@@ -120,7 +120,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/HomoExtractor.cpp.o: CXX_
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/HomoExtractor.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.cpp
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/HomoExtractor.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/AutoFilter.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/AutoFilter.cpp
@@ -128,7 +128,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/AutoFilter.cpp.o: CXX_COM
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/AutoFilter.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.cpp
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/Bspline.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/Bspline.cpp
@@ -136,7 +136,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/Bspline.cpp.o: CXX_COMPIL
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/Bspline.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/Bspline.cpp
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/Bspline.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 build CMakeFiles/native-lib.dir/src/main/cpp/processor/Quaternion.cpp.o: CXX_COMPILER__native-lib ../../../../src/main/cpp/processor/Quaternion.cpp
@@ -144,7 +144,7 @@ build CMakeFiles/native-lib.dir/src/main/cpp/processor/Quaternion.cpp.o: CXX_COM
   DEP_FILE = CMakeFiles/native-lib.dir/src/main/cpp/processor/Quaternion.cpp.o.d
   FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -frtti -fexceptions -O2 -DNDEBUG  -fPIC   -std=gnu++11
   INCLUDES = -I../../../../src/main/cpp/include
-  IN_ABS = /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/Quaternion.cpp
+  IN_ABS = /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/Quaternion.cpp
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir/src/main/cpp/processor
 

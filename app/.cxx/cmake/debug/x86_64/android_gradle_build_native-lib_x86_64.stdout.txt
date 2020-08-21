@@ -1,76 +1,67 @@
-[1/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o
-[2/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/StableProcessor.cc.o
-[3/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/ThetaHelper.cc.o
-[4/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadCompensation.cc.o
-[5/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadContext.cc.o
-[6/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadRollingShutter.cpp.o
-[7/8] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/HomoExtractor.cpp.o
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/native-lib.cpp:3:
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/StableProcessor.h:8:
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadCompensation.h:19:
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+[1/6] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o
+[2/6] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/StableProcessor.cc.o
+[3/6] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/ThetaHelper.cc.o
+[4/6] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/ThreadCompensation.cc.o
+[5/6] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/processor/HomoExtractor.cpp.o
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/StableProcessor.cc:5:
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/StableProcessor.h:8:
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadCompensation.h:19:
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
 #include "BSpline.h"
          ^~~~~~~~~~~
          "Bspline.h"
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.h:16:9: warning: 'PI' macro redefined [-Wmacro-redefined]
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:16:9: warning: 'PI' macro redefined [-Wmacro-redefined]
 #define PI (2 * acos(0))
         ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.h:16:9: note: previous definition is here
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/HomoExtractor.h:16:9: note: previous definition is here
 #define PI 3.1415926535
         ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/native-lib.cpp:13:10: warning: 'LOG_TAG' macro redefined [-Wmacro-redefined]
+2 warnings generated.
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/native-lib.cpp:3:
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/StableProcessor.h:8:
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadCompensation.h:19:
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+#include "BSpline.h"
+         ^~~~~~~~~~~
+         "Bspline.h"
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:16:9: warning: 'PI' macro redefined [-Wmacro-redefined]
+#define PI (2 * acos(0))
+        ^
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/HomoExtractor.h:16:9: note: previous definition is here
+#define PI 3.1415926535
+        ^
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/native-lib.cpp:13:10: warning: 'LOG_TAG' macro redefined [-Wmacro-redefined]
 #define  LOG_TAG    "accelerometergraph"
          ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadRollingShutter.h:14:9: note: previous definition is here
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadRollingShutter.h:14:9: note: previous definition is here
 #define LOG_TAG    "cThreadRollingShutter"
         ^
 3 warnings generated.
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/StableProcessor.cc:5:
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/StableProcessor.h:8:
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadCompensation.h:19:
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/HomoExtractor.cpp:898:36: warning: format specifies type 'int' but the argument has type 'std::__ndk1::vector<cv::Point_<float>, std::__ndk1::allocator<cv::Point_<float> > >::size_type' (aka 'unsigned long') [-Wformat]
+    LOGI("curFeaturesTmp size:%d", curFeaturesTmp.size());
+                              ~~   ^~~~~~~~~~~~~~~~~~~~~
+                              %lu
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/HomoExtractor.cpp:7:67: note: expanded from macro 'LOGI'
+#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+                                                                  ^~~~~~~~~~~
+1 warning generated.
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadCompensation.cc:5:
+In file included from /Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadCompensation.h:19:
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
 #include "BSpline.h"
          ^~~~~~~~~~~
          "Bspline.h"
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.h:16:9: warning: 'PI' macro redefined [-Wmacro-redefined]
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/AutoFilter.h:16:9: warning: 'PI' macro redefined [-Wmacro-redefined]
 #define PI (2 * acos(0))
         ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.h:16:9: note: previous definition is here
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/HomoExtractor.h:16:9: note: previous definition is here
 #define PI 3.1415926535
         ^
-2 warnings generated.
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadCompensation.cc:5:
-In file included from /Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadCompensation.h:19:
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.h:13:10: warning: non-portable path to file '"Bspline.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
-#include "BSpline.h"
-         ^~~~~~~~~~~
-         "Bspline.h"
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/AutoFilter.h:16:9: warning: 'PI' macro redefined [-Wmacro-redefined]
-#define PI (2 * acos(0))
-        ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.h:16:9: note: previous definition is here
-#define PI 3.1415926535
-        ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadCompensation.cc:11:9: warning: 'LOG_TAG' macro redefined [-Wmacro-redefined]
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadCompensation.cc:11:9: warning: 'LOG_TAG' macro redefined [-Wmacro-redefined]
 #define LOG_TAG    "c_ThreadCompensation"
         ^
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/ThreadRollingShutter.h:14:9: note: previous definition is here
+/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/cpp/processor/ThreadRollingShutter.h:14:9: note: previous definition is here
 #define LOG_TAG    "cThreadRollingShutter"
         ^
 3 warnings generated.
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.cpp:910:80: warning: format specifies type 'int' but the argument has type 'std::__ndk1::vector<cv::Point_<float>, std::__ndk1::allocator<cv::Point_<float> > >::size_type' (aka 'unsigned long') [-Wformat]
-    LOGI("Point size : %d; H Matinthread: %f, %f, %f, %f, %f, %f, %f, %f, %f", lastFeaturesTmp.size(), H.at<double>(0,0), H.at<double>(0,1), H.at<double>(0,2), H.at<double>(1,0), H.at<double>(1,1), H.at<double>(1,2), H.at<double>(2,0), H.at<double>(2,1), H.at<double>(2,2));
-                       ~~                                                      ^~~~~~~~~~~~~~~~~~~~~~
-                       %lu
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.cpp:7:67: note: expanded from macro 'LOGI'
-#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-                                                                  ^~~~~~~~~~~
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.cpp:984:35: warning: format specifies type 'int' but the argument has type 'std::__ndk1::vector<cv::Point_<float>, std::__ndk1::allocator<cv::Point_<float> > >::size_type' (aka 'unsigned long') [-Wformat]
-    LOGI("curFeaturesTmpsiez:%d", curFeaturesTmp.size());
-                             ~~   ^~~~~~~~~~~~~~~~~~~~~
-                             %lu
-/Users/user/Desktop/onlineStab_update/sjj/stable-camera2/app/src/main/cpp/processor/HomoExtractor.cpp:7:67: note: expanded from macro 'LOGI'
-#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-                                                                  ^~~~~~~~~~~
-2 warnings generated.
-[8/8] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/x86_64/libnative-lib.so
+[6/6] Linking CXX shared library ../../../../build/intermediates/cmake/debug/obj/x86_64/libnative-lib.so
