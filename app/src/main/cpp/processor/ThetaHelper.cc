@@ -14,6 +14,7 @@ static cv::Mat test_point_after = (cv::Mat_<double>(3, 1) << 1.0, 1.0, 1.0);
 static cv::Point2f test_point1(1.0, 1.0);
 static int frame_count = 0;
 static FILE* file;
+static std::ofstream gyro_info_file("/data/data/me.zhehua.gryostable.version_new2/data/gyro_xyz.txt");
 static cv::Mat last_mat = cv::Mat::eye(3, 3, CV_64F);
 static cv::Mat cur_mat = cv::Mat::eye(3, 3, CV_64F);
 static std::queue<cv::Vec<double, 3>> last_tt_que;
@@ -329,7 +330,7 @@ void ThetaHelper::getR(double timestamp, bool isCrop) {
 //    WriteToFile(file, oldtheta[0], oldtheta[1], oldtheta[2], frame_count);
 
     threads::ThreadContext::rTheta.push(oldtheta);
-    oldtheta[2] = 0;
+    //oldtheta[2] = 0;
     oldx.push_back(oldtheta[0]);//[oldx addObject:[NSNumber numberWithDouble: oldtheta[0]]];
     oldy.push_back(oldtheta[1]);//[oldy addObject:[NSNumber numberWithDouble: oldtheta[1]]];
     oldz.push_back(oldtheta[2]);//[oldz addObject:[NSNumber numberWithDouble: oldtheta[2]]];
@@ -402,6 +403,9 @@ void ThetaHelper::RsChangeVectorToMat(cv::Mat* rs_out_Mat) {
 static float num = 0;
 void ThetaHelper::putValue(double timestamp, float x, float y, float z) {
     Timeg.push_back(timestamp);
+
+    //gyro_info_file << (long)(timestamp * 1000000000) << " " << x << " " << y << " " << z << std::endl;
+
     if(is_use_drift_){
         if(gyro_count_ <= 30){
             roxl.push_back(0);

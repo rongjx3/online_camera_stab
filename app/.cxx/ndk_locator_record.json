@@ -1,5 +1,5 @@
 {
-  "ndkFolder": "/Users/user/Library/Android/sdk/ndk-bundle",
+  "ndkFolder": "/Users/user/Library/Android/sdk/ndk/21.3.6528147",
   "messages": [
     {
       "level": "INFO",
@@ -23,7 +23,11 @@
     },
     {
       "level": "INFO",
-      "message": "No user requested version, choosing /Users/user/Library/Android/sdk/ndk-bundle which is version 20.0.5594570"
+      "message": "Considering /Users/user/Library/Android/sdk/ndk/21.3.6528147 in SDK ndk folder"
+    },
+    {
+      "level": "INFO",
+      "message": "No user requested version, choosing /Users/user/Library/Android/sdk/ndk/21.3.6528147 which is version 21.3.6528147"
     }
   ]
 }

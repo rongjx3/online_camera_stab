@@ -43,6 +43,7 @@ add_library( # Sets the name of the library.
         src/main/cpp/processor/ThreadRollingShutter.cpp
         src/main/cpp/processor/HomoExtractor.cpp
         src/main/cpp/processor/AutoFilter.cpp
+        src/main/cpp/processor/AutoFilter_2.cpp
         src/main/cpp/processor/Bspline.cpp
         src/main/cpp/processor/Quaternion.cpp
         )

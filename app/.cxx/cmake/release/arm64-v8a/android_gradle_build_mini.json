@@ -1,21 +1,21 @@
 {
   "buildFiles": [
-    "/Users/user/Desktop/onlineStab_update/stable-camera_new/app/CMakeLists.txt"
+    "/Users/user/Desktop/onlineStab_update/stable-camera_new2/app/CMakeLists.txt"
   ],
   "cleanCommands": [
-    "/Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/user/Desktop/onlineStab_update/stable-camera_new/app/.cxx/cmake/release/arm64-v8a --target clean"
+    "/Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/user/Desktop/onlineStab_update/stable-camera_new2/app/.cxx/cmake/release/arm64-v8a --target clean"
   ],
   "libraries": {
     "libopencv_java3-Release-arm64-v8a": {
       "artifactName": "libopencv_java3",
       "abi": "arm64-v8a",
-      "output": "/Users/user/Desktop/onlineStab_update/stable-camera_new/app/src/main/jniLibs/arm64-v8a/libopencv_java3.so"
+      "output": "/Users/user/Desktop/onlineStab_update/stable-camera_new2/app/src/main/jniLibs/arm64-v8a/libopencv_java3.so"
     },
     "native-lib-Release-arm64-v8a": {
       "artifactName": "native-lib",
-      "buildCommand": "/Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/user/Desktop/onlineStab_update/stable-camera_new/app/.cxx/cmake/release/arm64-v8a --target native-lib",
+      "buildCommand": "/Users/user/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/user/Desktop/onlineStab_update/stable-camera_new2/app/.cxx/cmake/release/arm64-v8a --target native-lib",
       "abi": "arm64-v8a",
-      "output": "/Users/user/Desktop/onlineStab_update/stable-camera_new/app/build/intermediates/cmake/release/obj/arm64-v8a/libnative-lib.so"
+      "output": "/Users/user/Desktop/onlineStab_update/stable-camera_new2/app/build/intermediates/cmake/release/obj/arm64-v8a/libnative-lib.so"
     }
   }
 }

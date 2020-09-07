@@ -26,10 +26,12 @@ private:
     cv::Mat last_perp=cv::Mat::eye(3, 3, CV_64F), last_shear=cv::Mat::eye(3, 3, CV_64F);
     bool stable_move=true, stable_move2=false;
     std::vector<int> block_index_;
+    int move_status = 1;
 
     std::mutex mutex_, detect_mutex_, track_mutex_;
     cv::Mat last_lu_, last_ru_, last_ld_, last_rd_;
     cv::Mat cur_lu_, cur_ru_, cur_ld_, cur_rd_;
+    cv::Mat gyro_r;
     std::thread detect_thread0_, detect_thread1_, detect_thread2_, detect_thread3_;
     std::thread track_thread0_, track_thread1_, track_thread2_, track_thread3_;
     std::condition_variable is_wait_over;
@@ -47,6 +49,7 @@ private:
     int in_area(cv::Point2f p1, int w, int h);
     bool judge_area();
     void calcul_Homo(std::vector<char> &ifselect, int niter, int type);
+    void calcul_Aff(std::vector<char> &ifselect);
     bool judge_recal_simple(cv::Mat img1, std::vector<char> ifselect);
     double calcul_H_error(int c_h, int c_w);
     cv::Point2f goround(cv::Point2f p1, cv::Point2f p0, double degree);
@@ -57,8 +60,9 @@ private:
 
 public:
     bool draw_information = false;
-    cv::Mat extractHomo( cv::Mat& img1, cv::Mat& img2);
+    cv::Mat extractHomo( cv::Mat& img1, cv::Mat& img2, cv::Mat R_old);
     void setDrawStatus(bool is_draw);
+    void set_move_status(int m);
 };
 
 

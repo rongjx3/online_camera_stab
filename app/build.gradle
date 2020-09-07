@@ -19,7 +19,7 @@ android {
     }
     buildTypes {
         debug {
-            applicationIdSuffix ".version_new"
+            applicationIdSuffix ".version_new2"
         }
         release {
             minifyEnabled false

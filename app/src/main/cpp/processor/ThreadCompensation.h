@@ -17,6 +17,7 @@
 #include "HomoExtractor.h"
 #include <string>
 #include "AutoFilter.h"
+//#include "AutoFilter_2.h"
 #include <fstream>
 
 namespace threads {
@@ -39,17 +40,20 @@ namespace threads {
         Filter filter;
         Vec<double, 3> lastRot;
         cv::Mat lastf;
+        std::vector<double> error_q, error_q_x, error_q_y, error_q_z;
 
         bool is_first_use_rtheta = true;
         bool is_first_frame = true;
         AutoFilter filter1;
+        cv::Mat cum_H = cv::Mat::eye(3, 3, CV_64F);
 
-//        HomoExtractor homoExtractor;
+        HomoExtractor homoExtractor;
 
         void worker();
         bool stable_count(double e);
-        Mat computeAffine();
+        Mat computeAffine(cv::Mat &R);
         void frameCompensate();
+        cv::Mat limit_Mat(cv::Mat homo);
         void decomposeHomo(cv::Mat h, Point2f cen, cv::Mat &perp, cv::Mat &sca, cv::Mat &shear, cv::Mat &rot, cv::Mat &trans);
 
         double computeMaxDegree( vector<Point2f> img_line , vector<Point2f> crop_line , double degree , Point2f center );

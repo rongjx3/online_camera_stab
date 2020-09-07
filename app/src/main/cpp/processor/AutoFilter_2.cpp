@@ -2,9 +2,9 @@
 // Created by ShiJJ on 2020/6/15.
 //
 
-#include "AutoFilter.h"
+#include "AutoFilter_2.h"
 #include "BSpline.h"
-#define LOG_TAG    "c_AutoFilter"
+#define LOG_TAG    "c_AutoFilter_2"
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
@@ -13,8 +13,8 @@ static int frame_count = 1;
 static std::ofstream file_w1("/data/data/me.zhehua.gryostable/data/middle.txt");
 static int frame_count_m = 1;
 static bool is_first = true;
-int AutoFilter::predict_num_ = 5;
-AutoFilter::AutoFilter(int max_size, double sigma)
+int AutoFilter_2::predict_num_ = 5;
+AutoFilter_2::AutoFilter_2(int max_size, double sigma)
 :max_size_(max_size), sigma_(sigma)
 {
     std::cout << max_size_ <<" " <<sigma_ << std::endl;
@@ -26,15 +26,10 @@ AutoFilter::AutoFilter(int max_size, double sigma)
         weight_vec_[i] = weight;
     }
 
-    size_ = cv::Size(1920, 1080);
-    center.x = size_.width / 2;
-    center.y = size_.height / 2;
-    keep_num = 0;
-    keep_rate = 1.0;
-    mode = 1;
-    move_status = 1;
-    first_in = true;
+
     cum_H = cv::Mat::eye(3, 3, CV_64F);
+    output_buffer_.push(cum_H.clone());
+    size_ = cv::Size(1920, 1080);
     vertex_ = (cv::Mat_<double>(3, 4)<<0.0,0.0,size_.width-1,size_.width-1,0.0,size_.height-1,size_.height-1,0.0,1.0,1.0,1.0,1.0);
     double cropw = crop_rate_ * size_.width;
     double croph = crop_rate_ * size_.height;
@@ -49,73 +44,29 @@ AutoFilter::AutoFilter(int max_size, double sigma)
     num_que_ = 0;
 }
 
-void AutoFilter::set_move_status(int m){
-    move_status = m;
-}
+bool AutoFilter_2::push(cv::Mat goodar) {
+    //正常处理
 
-bool AutoFilter::push(cv::Mat goodar) {
-    if (goodar.empty()) {   //最后一帧，结束
-        int target=max_size_/2;
-        while (input_buffer_.size()>max_size_/2) {
-            putIntoWindow(target);
-            input_buffer_.pop_front();
-            trans_buffer_.pop_front();
-            sca_buffer_.pop_front();
-        }
-        return true;
-    }
-    //trans_pre = trans_now.clone();
-    //trans_now = goodar.clone();
-    input_buffer_.push_back(goodar);
-    input_trans_buffer_.push_back(goodar);
-
-    cv::Mat perp, sca, shear, rot, trans;
-    decomposeHomo(goodar, center, perp, sca, shear, rot, trans);
-    trans_mat_buffer_.push_back(trans);
-    cv::Point2f t(trans.at<double>(0,2), trans.at<double>(1,2));
-    trans_buffer_.push_back(t);
-    cv::Mat M1 = (cv::Mat_<double>(3, 3) << 1, 0, - center.x, 0, 1, - center.y, 0, 0, 1);
-    cv::Mat M2 = (cv::Mat_<double>(3, 3) << 1, 0, center.x, 0, 1, center.y, 0, 0, 1);
-    sca = M2.inv() * sca * M1.inv();
-    cv::Point2f s(sca.at<double>(0,0), sca.at<double>(1,1));
-    sca_buffer_.push_back(s);
-
-    if(input_buffer_.size() < max_size_){   //刚开始放入数据
-        if(input_buffer_.size() >= delay_num_){
-            int target = input_buffer_.size() - (delay_num_);
-            int offset = max_size_ - input_buffer_.size();
-            if(putIntoWindow(target, offset)){
-                return true;
-            } else {
-                return false;
-            }
-
-        } else{
-            return false;
-        }
-    } else {    //正常处理
-        int target = input_buffer_.size() - delay_num_;
-        if(putIntoWindow(target)){
-            input_buffer_.pop_front();
-            trans_buffer_.pop_front();
-            sca_buffer_.pop_front();
-            trans_mat_buffer_.pop_front();
-
+    LOGI("push in");
+    input_buffer_.push_back(goodar.clone());
+    LOGI("push here: %d", input_buffer_.size());
+    if(input_buffer_.size() >= max_size_/2) {
+        if (putIntoWindow(goodar)) {
+            //input_buffer_.pop_front();
             return true;
         } else {
-            input_buffer_.pop_front();
-            trans_buffer_.pop_front();
-            sca_buffer_.pop_front();
-            trans_mat_buffer_.pop_front();
-
+            //input_buffer_.pop_front();
             return false;
         }
-
+    }
+    else
+    {
+        return false;
     }
 
 }
 
-cv::Mat AutoFilter:: pop() {
+cv::Mat AutoFilter_2:: pop() {
     if(!output_buffer_.empty()){
         cv::Mat ret_mat = output_buffer_.front().clone();
         output_buffer_.pop();
@@ -125,8 +76,8 @@ cv::Mat AutoFilter:: pop() {
 
 }
 
-bool AutoFilter::putIntoWindow(int target, int offset) {
-    std::cout << "target:" << target << std::endl;
+bool AutoFilter_2::putIntoWindow(cv::Mat h) {
+    /*std::cout << "target:" << target << std::endl;
     window_.clear();
     window_.resize(input_buffer_.size());
     window_[target] = cv::Mat::eye(3, 3, CV_64F);
@@ -142,30 +93,12 @@ bool AutoFilter::putIntoWindow(int target, int offset) {
         ret_mat += (weight_vec_[i + offset] * window_[i]);
         sum_weight += weight_vec_[i + offset];
     }
-    ret_mat /= sum_weight;
-
-    window_.clear();
-    window_.resize(trans_mat_buffer_.size());
-    window_[target] = cv::Mat::eye(3, 3, CV_64F);
-    for(int i = 0; i < trans_mat_buffer_.size(); i++){
-        window_[i] = trans_mat_buffer_[i];
-    }
-    double t_sum_weight = 0;
-    cv::Mat t_ret_mat = cv::Mat::zeros(3, 3, CV_64F);
-    for(int i = 0; i < window_.size(); i++) {
-        t_ret_mat += (weight_vec_[i + offset] * window_[i]);
-        t_sum_weight += weight_vec_[i + offset];
-    }
-    t_ret_mat /= t_sum_weight;
-    trans_for_cumh = t_ret_mat.clone();
-    //trans_for_cumh.at<double>(0,2) = -trans_for_cumh.at<double>(0,2);
-    //trans_for_cumh.at<double>(1,2) = -trans_for_cumh.at<double>(1,2);
-
-    if(trans_buffer_.size() > max_size_/2 + 1)
-    {
-        analyzeTrans(ret_mat);
-    }
-
+    ret_mat /= sum_weight;*/
+    LOGI("AutoFilter_2 1");
+    cv::Mat temp = input_buffer_.front();
+    input_buffer_.pop_front();
+    cum_H = cum_H * temp.inv();
+    cv::Mat ret_mat = cum_H;
     ex_count++;
     if(true)
     {
@@ -174,6 +107,7 @@ bool AutoFilter::putIntoWindow(int target, int offset) {
     {
         output_buffer_.push(ret_mat);
     }
+    LOGI("AutoFilter_2 2");
 
     if(ex_count < predict_num_){
         return false;
@@ -183,7 +117,7 @@ bool AutoFilter::putIntoWindow(int target, int offset) {
 }
 
 
-bool AutoFilter::isInside(cv::Mat cropvertex, cv::Mat newvertex) {
+bool AutoFilter_2::isInside(cv::Mat cropvertex, cv::Mat newvertex) {
     bool aInside = true;
     for( int i = 0 ; i < 4 ; i++ )
     {
@@ -213,7 +147,7 @@ bool AutoFilter::isInside(cv::Mat cropvertex, cv::Mat newvertex) {
     return aInside;
 }
 
-void AutoFilter::processCrop(const cv::Mat &comp, const cv::Size &size) {
+void AutoFilter_2::processCrop(const cv::Mat &comp, const cv::Size &size) {
     s_mat_.push(comp.clone());
     cv::Point2d crop_window[4];
     cv::Mat stable_mat = comp.clone();
@@ -270,36 +204,16 @@ void AutoFilter::processCrop(const cv::Mat &comp, const cv::Size &size) {
         cur_y = 0;
     }
     if(x_m < xmin){
-        LOGI("touch border");
-        if(mode == 2)
-        {
-            mode = 21;
-        }
         x_m = xmin + x_d /4;
         cur_x = x_m;
     } else if(x_m > xmax){
-        LOGI("touch border");
-        if(mode == 2)
-        {
-            mode = 21;
-        }
         x_m = xmax - x_d / 4;
         cur_x = x_m;
     }
     if(y_m < ymin){
-        LOGI("touch border");
-        if(mode == 2)
-        {
-            mode = 21;
-        }
         y_m = ymin + y_d /4;
         cur_y = y_m;
     } else if(y_m > ymax){
-        LOGI("touch border");
-        if(mode == 2)
-        {
-            mode = 21;
-        }
         y_m = ymax - y_d/4;
         cur_y = y_m;
     }   //边界检查
@@ -483,7 +397,7 @@ void AutoFilter::processCrop(const cv::Mat &comp, const cv::Size &size) {
 
 }
 
-double AutoFilter::calError(double *ori, double *aft, int n) {
+double AutoFilter_2::calError(double *ori, double *aft, int n) {
     double err = 0;
     for(int i = 0; i < n; i++){
         err += abs(sqrt(abs(pow(ori[i], 2) - pow(aft[i], 2))));
@@ -491,7 +405,7 @@ double AutoFilter::calError(double *ori, double *aft, int n) {
     return err;
 }
 
-void AutoFilter::queue_in(double *q, int m, double x) {
+void AutoFilter_2::queue_in(double *q, int m, double x) {
     for(int i=1; i<=m; i++)
     {
         q[i-1] = q[i];
@@ -499,7 +413,7 @@ void AutoFilter::queue_in(double *q, int m, double x) {
     q[m]=x;
 }
 
-void AutoFilter::polyfit(double *arrX, double *arrY, int num, int n, double* result) {
+void AutoFilter_2::polyfit(double *arrX, double *arrY, int num, int n, double* result) {
     int size = num;//vec里的个数
     int x_num = n + 1;//次数+1
     //构造矩阵U和Y
@@ -533,317 +447,4 @@ void AutoFilter::polyfit(double *arrX, double *arrY, int num, int n, double* res
         }
     }
 
-}
-
-void AutoFilter::decomposeHomo(cv::Mat h, cv::Point2f cen, cv::Mat &perp, cv::Mat &sca,
-                                       cv::Mat &shear, cv::Mat &rot, cv::Mat &trans) {
-    double hm[3][3];
-    double fax, fay, tx, ty, sh, theta, lamx, lamy;
-    double cx = cen.x;
-    double cy = cen.y;
-    for(int i=0;i<3;i++)
-    {
-        for(int j=0;j<3;j++)
-        {
-            hm[i][j] = h.at<double>(i,j)/h.at<double>(2,2);
-        }
-    }
-
-    fax = hm[2][0]/(cx*hm[2][0] + cy*hm[2][1] + 1);
-    fay = hm[2][1]/(cx*hm[2][0] + cy*hm[2][1] + 1);
-    //cout << "fax: " << fax << " fay: " << fay << endl;
-
-    double n = 1 - cx*fax - cy*fay;
-
-    double ctx = n*hm[0][2] + cx*n*hm[0][0] + cy*n*hm[0][1];
-    double cty = n*hm[1][2] + cx*n*hm[1][0] + cy*n*hm[1][1];
-    //cout << "n: " << n << " ctx: " << ctx << " cty: " << cty << endl;
-
-    tx = ctx - cx;
-    ty = cty - cy;
-
-    double xc = n*hm[0][0] - fax*n*hm[0][2] - cx*fax*n*hm[0][0] - cy*fax*n*hm[0][1];
-    double xs = n*hm[1][0] - fax*n*hm[1][2] - cx*fax*n*hm[1][0] - cy*fax*n*hm[1][1];
-    double ysmc = - n*hm[0][1] + fay*n*hm[0][2] + cx*fay*n*hm[0][0] + cy*fay*n*hm[0][1];
-    double ycps = n*hm[1][1] - fay*n*hm[1][2] - cx*fay*n*hm[1][0] - cy*fay*n*hm[1][1];
-    //cout << "xc: " << xc << " xs: " << xs << " ysmc: " << ysmc << " ycps: " << ycps << endl;
-    if(xs == 0)
-        xs=1e-8;
-
-    sh = -(xc*ysmc - xs*ycps)/(xc*ycps + xs*ysmc);
-    double z = xc*xc + xs*xs;
-    double theta1 = -2*atan( (xc+sqrt(z)) / xs );
-    double theta2 = -2*atan( (xc-sqrt(z)) / xs );
-    if(xs == 0)
-    {
-        theta1 = 0;
-        theta2 = 0;
-    }
-    if(abs(theta1)<abs(theta2))
-    {
-        theta = theta1;
-        lamx = -sqrt(z);
-        lamy = (xc*xc*ycps - xc*ycps*(xc+sqrt(z)) - xs*ysmc*(xc+sqrt(z)) + xc*xs*ysmc) / z;
-    }
-    else
-    {
-        theta = theta2;
-        lamx = sqrt(z);
-        lamy = (xc*xc*ycps - xc*ycps*(xc-sqrt(z)) - xs*ysmc*(xc-sqrt(z)) + xc*xs*ysmc) / z;
-    }
-
-    //cout << "theta: " << theta << " lamx: " << lamx << " lamy: " << lamy << endl;
-
-    cv::Mat M1=(cv::Mat_<double>(3, 3) <<
-                                   1.0, 0.0, -cx,
-            0.0, 1.0, -cy,
-            0.0, 0.0, 1.0);
-
-    cv::Mat M2=(cv::Mat_<double>(3, 3) <<
-                                   1.0, 0.0, cx,
-            0.0, 1.0, cy,
-            0.0, 0.0, 1.0);
-
-    cv::Mat PE=(cv::Mat_<double>(3, 3) <<
-                                   1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            fax, fay, 1.0);
-
-    cv::Mat SC=(cv::Mat_<double>(3, 3) <<
-                                   lamx, 0.0, 0.0,
-            0.0, lamy, 0.0,
-            0.0, 0.0, 1.0);
-
-    cv::Mat SH=(cv::Mat_<double>(3, 3) <<
-                                   1.0, sh, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0);
-
-    cv::Mat RO=(cv::Mat_<double>(3, 3) <<
-                                   cos(theta), -sin(theta), 0.0,
-            sin(theta), cos(theta), 0.0,
-            0.0, 0.0, 1.0);
-
-    cv::Mat TR=(cv::Mat_<double>(3, 3) <<
-                                   1.0, 0.0, tx,
-            0.0, 1.0, ty,
-            0.0, 0.0, 1.0);
-
-    perp = M2 * PE * M1;
-    perp = perp / perp.at<double>(2,2);
-    sca = M2 * SC * M1;
-    shear = M2 * SH * M1;
-    rot = M2 * RO * M1;
-    trans = TR.clone();
-}
-
-void AutoFilter::analyzeTrans(cv::Mat& comp) {
-    double limit_x = center.x / 8;
-    double limit_y = center.y / 8;
-    bool all_small = true;
-    double sum_x = 0, sum_y = 0;
-    int num = 0;
-    for (int i = max_size_ / 2; i < trans_buffer_.size(); i++) {
-        sum_x += trans_buffer_[i].x;
-        sum_y += trans_buffer_[i].y;
-        num++;
-        if (trans_buffer_[i].x > limit_x || trans_buffer_[i].y > limit_y) {
-            all_small = false;
-            break;
-        }
-    }
-    sum_x /= num;
-    sum_y /= num;
-    if (sum_x > limit_x / 3 || sum_y > limit_y / 3) {
-        all_small = false;
-    }
-
-    if(all_small)
-    {
-        double limit_up = 1.03, limit_up_avg = 1.005;
-        double limit_down = 0.97, limit_down_avg = 0.995;
-        sum_x = 0;
-        sum_y = 0;
-        num = 0;
-        for (int i = max_size_ / 2; i < sca_buffer_.size(); i++) {
-            sum_x += sca_buffer_[i].x;
-            sum_y += sca_buffer_[i].y;
-            num++;
-            if (sca_buffer_[i].x > limit_up || sca_buffer_[i].y > limit_up || sca_buffer_[i].x < limit_down || sca_buffer_[i].y < limit_down) {
-                all_small = false;
-                break;
-            }
-        }
-        sum_x /= num;
-        sum_y /= num;
-        LOGI("sca_avg para: %f, %f",sum_x, sum_y);
-        if (sum_x > limit_up_avg || sum_y > limit_up_avg || sum_x < limit_down_avg || sum_y < limit_down_avg) {
-            all_small = false;
-        }
-    }
-
-    int t = input_buffer_.size();
-    cv::Mat temp = input_trans_buffer_[1];
-    input_trans_buffer_.pop_front();
-    //LOGI("keep trans: %d / %d", keep_num, max_size_ / 2);
-    /*if(all_small && keep < 20)
-    {
-        if(keep_num == 0)
-        {
-            keep = 0;
-            cum_H = comp.clone();
-        } else{
-            \
-            keep++;
-            cum_H = cum_H * temp.inv();
-        }
-        keep_num = num;
-        double per = (double)keep_num/(max_size_/2);
-        LOGI("keep_per1: %f", per);
-        if(per>1)
-        {
-            per = 1;
-        }
-        comp = cum_H.clone() * per + comp * (1-per);
-
-        return;
-    }
-    else
-    {
-        if(keep_num > 0)
-        {
-            cum_H = cum_H * temp.inv();
-            keep_num--;
-            keep++;
-            double per = (double)keep_num/(max_size_/2);
-            LOGI("keep_per2: %f", per);
-            if(per>1)
-            {
-                per = 1;
-            }
-            comp = cum_H.clone() * per + comp * (1-per);
-        }
-        if(keep_num == 0) {
-            keep = 0;
-        }
-        return;
-    }*/
-
-    if(mode == 21)
-    {
-
-    }
-    else if(mode == 12)
-    {
-
-    }
-    else if(mode == 1 && all_small && keep_num <= 0)
-    {
-        mode = 12;
-    }
-    else if(mode == 2 && (!all_small || move_status == 3 || move_status==4))
-    {
-        mode = 21;
-    }
-
-    if (mode == 21)
-    {
-        LOGI("mode-21");
-        first_in = true;
-        //由辅助模式进入正常模式
-        keep_rate -= 0.1;
-        LOGI("keep_rate1: %f", keep_rate);
-        if(keep_rate < 0)
-        {
-            keep_rate = 0;
-            keep_num = 50;
-            mode = 1;
-        }
-        cum_H = cum_H * temp.inv();
-        comp = cum_H.clone() * keep_rate + comp * (1 - keep_rate);
-    }
-    else if (mode == 12)
-    {
-        LOGI("mode-12");
-        //由正常模式进入辅助模式
-        //cv::Mat I = trans_for_cumh.clone();
-        cv::Mat I = cv::Mat::eye(3, 3, CV_64F);
-        keep_rate += 0.1;
-
-        if(keep_rate >= 1.0)
-        {
-            keep_rate = 1.0;
-            cum_H = I.clone();
-            mode = 2;
-        }
-        comp = comp * (1-keep_rate) + I * keep_rate;
-
-    }
-    else if (mode == 2) {
-        LOGI("mode-2");
-        /*if (first_in)
-        {
-            first_in = false;
-            keep_rate = 1.0;    //由正常模式进入辅助模式（一步完成）
-        }*/
-
-        /*if (keep_rate == 1.0)
-        {
-            cum_H = comp.clone();
-        } else{
-            cum_H = cum_H * temp.inv();
-        }
-
-        if (keep_rate >= 1.0) {
-            keep_rate = 1.0;
-            keep_change_rate = -0.01;
-        }
-        if (keep_rate <= 0.0) {
-            keep_rate = 1.0;
-            //keep_change_rate = 0.01;
-        }
-        keep_rate += keep_change_rate;
-
-        LOGI("keep_rate2: %f", keep_rate);
-
-        comp = cum_H.clone() * keep_rate + comp * (1 - keep_rate);*/
-
-        cum_H = cum_H * temp.inv();
-
-        //cv::Mat temp = trans_for_cumh.clone();
-        cv::Mat temp = cum_H.clone();
-        LOGI("cum_h: %f, %f, %f, %f, %f, %f, %f, %f, %f", temp.at<double>(0,0), temp.at<double>(0,1), temp.at<double>(0,2), temp.at<double>(1,0), temp.at<double>(1,1), temp.at<double>(1,2), temp.at<double>(2,0), temp.at<double>(2,1), temp.at<double>(2,2));
-        cv::Mat perp, sca, shear, rot, trans;
-        decomposeHomo(temp, center, perp, sca, shear, rot, trans);
-
-        cv::Mat M1=(cv::Mat_<double>(3, 3) <<
-                                       1.0, 0.0, -center.x,
-                0.0, 1.0, -center.y,
-                0.0, 0.0, 1.0);
-        cv::Mat M2=(cv::Mat_<double>(3, 3) <<
-                                       1.0, 0.0, center.x,
-                0.0, 1.0, center.y,
-                0.0, 0.0, 1.0);
-
-        perp = M2.inv() * perp * M1.inv();
-        sca = M2.inv() * sca * M1.inv();
-        shear = M2.inv() * shear * M1.inv();
-        rot = M2.inv() * rot * M1.inv();
-        double theta = asin(rot.at<double>(1,0));
-        LOGI("cum_h decom result: trans: %f, %f; perp: %f, %f; sca: %f, %f; shear: %f; rot: %f",
-             trans.at<double>(0,2), trans.at<double>(1,2), perp.at<double>(2,0), perp.at<double>(2,1),
-             sca.at<double>(0,0), sca.at<double>(1,1), shear.at<double>(0,1), theta);
-
-        //comp = trans_for_cumh * cum_H.clone();
-        comp = cum_H.clone();
-    }
-    else if(mode == 1)
-    {
-        keep_num --;
-        if(keep_num < 0)
-        {
-            keep_num = -1;
-        }
-        LOGI("mode-1");
-    }
 }
